@@ -18,6 +18,19 @@ alias rubynotes='cd ~/Documents/Developer_Notes/ruby'
 # alias vim='nvim'
 alias vimedit='\vim -p ~/.vimrc ~/.zshrc ~/.config/nvim/init.vim'
 alias nvimedit='nvim -p ~/.zshrc ~/.config/nvim/init.vim'
+function nvimcommit(){
+  cp ~/.zshrc ~/.config/nvim/.zshrc_copy
+
+  if [ ! -z "$1" ]; then
+    CURDIR=PWD
+    cd ~/.config/nvim
+    git add .
+    git commit -m "$1"
+    cd $CURDIR
+    unset CURDIR
+  fi
+
+}
 # export PYENV_ROOT="$(pyenv root)"
 # export PYENV_VERSION='3.10.0'
 export PYENV_VERSION='3.9.7'
