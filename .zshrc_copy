@@ -1,0 +1,89 @@
+export DATABASE_URL=postgres://postgres:example@127.0.0.1:5433
+export DRONE_SERVER=DRONE_SERVER_URL_HERE
+export DRONE_TOKEN=SOME_DRONE_TOKEN_FROM_NINJA
+export GEM_HOME="$HOME/.gem"
+#export GOPATH="/usr/local/workspace"
+#export GOROOT="/usr/local/go"
+export GOPATH="/Users/jared.ticotin/go"
+export GOROOT="/usr/local/Cellar/go/1.17.1/libexec"
+alias dynamo='docker run -d -p 8000:8000 amazon/dynamodb-local -jar DynamoDBLocal.jar -inMemory -sharedDb'
+alias postgres_local='docker run -d -p 5433:5432/tcp --restart=always -e POSTGRES_PASSWORD=example postgres:12.7'
+alias git_submodule='git submodule update --init --recursive'
+
+# vim aliases/exports
+alias cdvim='cd ~/Documents/Developer_Notes/vim/textfiles'
+alias terminus='cd ~/Documents/GetTerminus'
+alias gonotes='cd ~/Documents/Developer_Notes/Go'
+alias rubynotes='cd ~/Documents/Developer_Notes/ruby'
+# alias vim='nvim'
+alias vimedit='\vim -p ~/.vimrc ~/.zshrc ~/.config/nvim/init.vim'
+alias nvimedit='nvim -p ~/.zshrc ~/.config/nvim/init.vim'
+# export PYENV_ROOT="$(pyenv root)"
+# export PYENV_VERSION='3.10.0'
+export PYENV_VERSION='3.9.7'
+# export PATH='$PYENV_ROOT/versions/$PYENV_VERSION/bin:$PATH'
+pfzf(){
+  fzf --preview='less {}' \
+  --bind shift-up:preview-up,shift-down:preview-down
+}
+# this should make fzf respect .gitignore files
+# [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+source /usr/local/Cellar/fzf/0.27.2/shell/key-bindings.zsh 
+export FZF_DEFAULT_COMMAND='fd --type f'
+export FZF_DEFAULT_OPTS="--height 90%"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_CTRL_T_OPTS="--preview \
+  'bat --color=always --theme=gruvbox-dark --line-range :100 {}' \
+  --bind 'ctrl-p:toggle-preview,shift-up:preview-page-up,shift-down:preview-page-down' \
+  --height=90%"
+export FZF_CTRL_F_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_CTRL_F_OPTS="$FZF_DEFAULT_OPTS"
+export FZF_ALT_C_COMMAND='fd --type d . --color=never --hidden'
+export FZF_ALT_C_OPTS="--preview \
+  'tree -C {} | head -50' \
+  --height=90%"
+#export FZF_CTRL_F_COMMAND="rg -i --no-heading"
+bindkey -s "^f" "rgfzf^M" 
+rgfzf() {
+  #to do: if empty, don't call nvim
+  FILE_SELECTED=$(rg -i --no-heading '' | fzf | ggrep -oP '[^\:]*(?=\:)' | head -1)
+  if [ ! -z "$FILE_SELECTED" ]; then
+    nvim $FILE_SELECTED
+  fi
+  unset FILE_SELECTED
+}
+
+# git aliases
+alias git_cleanbranches='git checkout master && git branch \
+  | grep -v "master" | xargs -n 1 git branch -d'
+alias docker_restart='docker ps -q | xargs -n 1 docker restart'
+
+listening() {
+    if [ $# -eq 0 ]; then
+        sudo lsof -iTCP -sTCP:LISTEN -n -P
+    elif [ $# -eq 1 ]; then
+        sudo lsof -iTCP -sTCP:LISTEN -n -P | grep -i --color $1
+    else
+        echo "Usage: listening [pattern]"
+    fi
+}
+
+
+#format of terminal display showing just path
+#https://scriptingosx.com/2019/07/moving-to-zsh-06-customizing-the-zsh-prompt/
+#PS1='%m %~%# '#shows login and full directory
+#PS1='%~%# '#shows full directory
+#PS1='[%d] $ '#shows 2 folders back (not working)
+PS1='%F{29}%K{238}%2~%F{default}%K{default} %# '
+
+#auto complete for terraform
+autoload -U +X compinit && compinit
+#autoload -U +X bashcompinit && bashcompinit
+#complete -o nospace -C /usr/local/bin/terraform terraform
+
+#fzf-tab plugin
+# allows fzf autocomplete to work in zsh
+source ~/.config/fzf-tab/fzf-tab.plugin.zsh
+
+eval "$(rbenv init - zsh)"
+eval "$(pyenv init -)"
