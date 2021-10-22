@@ -22,7 +22,7 @@ function nvimcommit(){
   cp ~/.zshrc ~/.config/nvim/.zshrc_copy
 
   if [ ! -z "$1" ]; then
-    CURDIR=PWD
+    CURDIR=$PWD
     cd ~/.config/nvim
     git add .
     git commit -m "$1"
