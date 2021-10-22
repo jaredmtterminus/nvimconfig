@@ -26,7 +26,7 @@ function nvimcommit(){
     cd ~/.config/nvim
     git add .
     git commit -m "$1"
-    cd $CURDIR
+    cd "$CURDIR"
     unset CURDIR
   fi
 
