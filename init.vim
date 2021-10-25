@@ -99,6 +99,7 @@ noremap <C-v> :r !pbpaste<CR><CR>
 nnoremap <leader>tt :tabnew<CR>:terminal<CR>i
 nnoremap <leader>tx :split<CR>:terminal<CR>i
 nnoremap <leader>tv :vsplit<CR>:terminal<CR>i
+nnoremap <leader>ti :terminal<CR>i
 
 " all default settings copy/pasted to cocconfig.vim
 source ~/.config/nvim/cocconfig.vim
