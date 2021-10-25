@@ -19,13 +19,16 @@ alias rubynotes='cd ~/Documents/Developer_Notes/ruby'
 alias vimedit='\vim -p ~/.vimrc ~/.zshrc ~/.config/nvim/init.vim'
 alias nvimedit='nvim -p ~/.zshrc ~/.config/nvim/init.vim'
 function nvimcommit(){
-  cp ~/.zshrc ~/.config/nvim/.zshrc_copy
 
   if [ ! -z "$1" ]; then
     CURDIR=$PWD
     cd ~/.config/nvim
+    git checkout master
+    cp ~/.zshrc ./.zshrc_copy
+    cp ~/.vimrc ./.vimrc_copy
     git add .
     git commit -m "$1"
+    git push -u origin master
     cd "$CURDIR"
     unset CURDIR
   fi
