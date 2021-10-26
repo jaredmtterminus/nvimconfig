@@ -13,6 +13,7 @@ alias git_submodule='git submodule update --init --recursive'
 # vim aliases/exports
 alias cdvim='cd ~/Documents/Developer_Notes/vim/textfiles'
 alias terminus='cd ~/Documents/GetTerminus'
+alias dev='cd ~/Documents/Developer_Notes'
 alias gonotes='cd ~/Documents/Developer_Notes/Go'
 alias rubynotes='cd ~/Documents/Developer_Notes/ruby'
 # alias vim='nvim'
@@ -96,6 +97,8 @@ PS1='%F{29}%K{238}%2~%F{default}%K{default} %# '
 autoload -U +X compinit && compinit
 #autoload -U +X bashcompinit && bashcompinit
 #complete -o nospace -C /usr/local/bin/terraform terraform
+
+export PATH="$PATH:/Users/jared.ticotin/Library/Application Support/Coursier/bin"
 
 #fzf-tab plugin
 # allows fzf autocomplete to work in zsh
