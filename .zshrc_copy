@@ -74,6 +74,8 @@ rgfzf() {
 # git aliases
 alias git_cleanbranches='git checkout master && git branch \
   | grep -v "master" | xargs -n 1 git branch -d'
+alias git_cleanbranchesD='git checkout master && git branch \
+  | grep -v "master" | xargs -n 1 git branch -D'
 alias docker_restart='docker ps -q | xargs -n 1 docker restart'
 
 listening() {

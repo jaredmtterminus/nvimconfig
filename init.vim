@@ -20,6 +20,13 @@ set softtabstop=2
 " setting to syntax auto folds functions
 " set foldmethod=syntax
 
+" remember fold methods for manual folds
+augroup remember_folds
+  autocmd!
+  autocmd BufWinLeave * mkview
+  autocmd BufWinEnter * silent! loadview
+augroup END
+
 " mapping example:
 " nmap <F3> :set number! <CR>
 
