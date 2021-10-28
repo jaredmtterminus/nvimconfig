@@ -97,7 +97,7 @@ noremap <C-v> :r !pbpaste<CR><CR>
 " open terminal in separate tab
 " (note an alternative: ctrl-z. then to go back to nvim, type fg)
 nnoremap <leader>tt :tabnew<CR>:terminal<CR>i
-nnoremap <leader>tx :split<CR>:terminal<CR>i
+nnoremap <leader>tx :split<CR>:terminal<CR><C-w>ri
 nnoremap <leader>tv :vsplit<CR>:terminal<CR>i
 nnoremap <leader>ti :terminal<CR>i
 

@@ -9,6 +9,7 @@ export GOROOT="/usr/local/Cellar/go/1.17.1/libexec"
 alias dynamo='docker run -d -p 8000:8000 amazon/dynamodb-local -jar DynamoDBLocal.jar -inMemory -sharedDb'
 alias postgres_local='docker run -d -p 5433:5432/tcp --restart=always -e POSTGRES_PASSWORD=example postgres:12.7'
 alias git_submodule='git submodule update --init --recursive'
+alias git_push='git branch --show-current | xargs -n 1 git push origin'
 
 # vim aliases/exports
 alias cdvim='cd ~/Documents/Developer_Notes/vim/textfiles'
