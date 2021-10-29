@@ -98,7 +98,7 @@ tnoremap <Leader><Esc> <C-\><C-n>
 " allows you to copy to clipboard
 " vnoremap <C-c> :w !pbcopy<CR><CR>
 vnoremap <C-c> "*y
-noremap <C-v> :r !pbpaste<CR><CR>
+" noremap <C-v> :r !pbpaste<CR><CR>
 " shows file info when tab is active
 " autocmd BufWinEnter *.* <C-g>
 " open terminal in separate tab
