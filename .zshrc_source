@@ -21,8 +21,8 @@ function nvimcommit(){
 
 }
 
-# prerequisites for fzf
-prereqs=(rg ag tree bat fd)
+# prerequisites for fzf and vim
+prereqs=(rg ag tree bat fd python ruby node npm nvim)
 for i in $prereqs; do
   [ ! -x "$(command -v $i)" ] && echo "need to install $i"
 done
