@@ -5,5 +5,5 @@ Any local-specific settings are to be saved in the .zshrc file
 
 ## Instructions
 
-` Place repository in ~/.config/nvim `
-` in .zshrc: source ~/.config/nvim/.zshrc_source `
+* Place repository in ~/.config/nvim
+* in .zshrc: source ~/.config/nvim/.zshrc_source
