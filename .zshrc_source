@@ -1,7 +1,8 @@
 
-[ ! -d ~/.config ] && mkdir ~/.config
+[ ! -d ~/.config/nvim ] && mkdir -p ~/.config/nvim
 alias git_submodule='git submodule update --init --recursive'
 alias git_push='git branch --show-current | xargs -n 1 git push origin'
+alias showpath='echo "${(@s[:])PATH}" | xargs -n 1 | sort | uniq'
 alias nvimedit='nvim -p ~/.zshrc ~/.config/nvim/.zshrc_source ~/.config/nvim/init.vim'
 function nvimcommit(){
 
@@ -48,9 +49,11 @@ fi
 #   cd ~
 # fi
 if [ ! -d ~/.config/fzf-tab ]; then
+  CUR="$PWD"
   cd ~/.config
   git clone https://github.com/Aloxaf/fzf-tab
-  cd ~
+  cd "$CUR"
+  unset CUR
 fi
 # source ~/.config/fzf-tab-completion/zsh/fzf-zsh-completion.sh
 # bindkey '^I' fzf_completion
