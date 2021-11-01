@@ -1,4 +1,5 @@
 
+[ ! -d ~/.config ] && mkdir ~/.config
 alias git_submodule='git submodule update --init --recursive'
 alias git_push='git branch --show-current | xargs -n 1 git push origin'
 alias nvimedit='nvim -p ~/.zshrc ~/.config/nvim/.zshrc_source ~/.config/nvim/init.vim'
@@ -41,14 +42,19 @@ if [ -z "$FZF_KEY_BINDINGS_FILE" ]; then
 else
   source "$FZF_KEY_BINDINGS_FILE"
 fi 
-if [ ! -d ~/.config/fzf-tab-completion ]; then
-  [ ! -d ~/.config ] && mkdir ~/.config
+# if [ ! -d ~/.config/fzf-tab-completion ]; then
+#   cd ~/.config
+#   git clone https://github.com/lincheney/fzf-tab-completion
+#   cd ~
+# fi
+if [ ! -d ~/.config/fzf-tab ]; then
   cd ~/.config
-  git clone https://github.com/lincheney/fzf-tab-completion
+  git clone https://github.com/Aloxaf/fzf-tab
   cd ~
 fi
-source ~/.config/fzf-tab-completion/zsh/fzf-zsh-completion.sh
-bindkey '^I' fzf_completion
+# source ~/.config/fzf-tab-completion/zsh/fzf-zsh-completion.sh
+# bindkey '^I' fzf_completion
+source ~/.config/fzf-tab/fzf-tab.plugin.zsh
 export FZF_DEFAULT_COMMAND='fd --type f'
 export FZF_DEFAULT_OPTS="--height 90%"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
