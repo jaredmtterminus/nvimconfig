@@ -131,3 +131,21 @@ nnoremap <leader>do :call win_gotoid(g:vimspector_session_windows.output)<CR>
 " this will make sure all files/windows show the title
 set statusline=[%n]\ %t
 colorscheme gruvbox
+
+let g:coc_global_extensions=[
+      \'coc-python',
+      \'coc-html',
+      \'coc-vimlsp',
+      \'coc-markdownlint',
+      \'coc-solargraph',
+      \'coc-explorer',
+      \'coc-git',
+      \'coc-yaml',
+      \'coc-xml',
+      \'coc-go', 
+      \'coc-css',
+      \'coc-tsserver',
+      \'coc-json'
+      \]
+" maybe add: coc-metals
+
