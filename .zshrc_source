@@ -1,6 +1,23 @@
 
 alias git_submodule='git submodule update --init --recursive'
 alias git_push='git branch --show-current | xargs -n 1 git push origin'
+alias nvimedit='nvim -p ~/.zshrc ~/.config/nvim/.zshrc_source ~/.config/nvim/init.vim'
+function nvimcommit(){
+
+  if [ ! -z "$1" ]; then
+    CURDIR=$PWD
+    cd ~/.config/nvim
+    git checkout master
+    # cp ~/.zshrc ./.zshrc_copy
+    # cp ~/.vimrc ./.vimrc_copy
+    git add .
+    git commit -m "$1"
+    git push -u origin master
+    cd "$CURDIR"
+    unset CURDIR
+  fi
+
+}
 
 # prerequisites for fzf
 prereqs=(rg ag tree bat fd)
