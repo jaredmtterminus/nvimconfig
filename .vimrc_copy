@@ -1,0 +1,109 @@
+set hls
+set ic
+set is
+set number
+
+" syntax highlighting (vim has some built in)
+syntax on
+
+" indentation for all programming languages
+set expandtab
+set shiftwidth=2
+set smartindent
+set tabstop=2
+set softtabstop=2
+
+" fold method (default is manual)
+" setting to syntax auto folds functions
+" set foldmethod=syntax
+
+" mapping example:
+" nmap <F3> :set number! <CR>
+
+" autocorrect dictionary
+abbr ture true
+abbr flase false
+
+" netrw settings (vim file/folder explorer)
+let g:netrw_liststyle=3 " tree listing (default is 0)
+
+" fuzzy search
+set nocompatible " limit search to your project
+set path+=** " Search all subirectories recursively
+set wildmenu "shows multiple matches on one line
+
+if !has('nvim')
+
+  " autosave and load views for folding text
+  autocmd BufWinLeave *.* mkview
+  autocmd BufWinEnter *.* silent loadview
+
+
+  " color schemes
+  " (type :colorscheme <tab>)
+  " best built-in are default, pablo, zellner
+  " had to use autocmd event to bring back zellner after 
+  " leaving a diff or explorer
+  " autocmd BufEnter * colorscheme zellner
+  autocmd BufLeave * colorscheme pablo
+  autocmd FileType,BufEnter * if &ft!="netrw"|colorscheme zellner|endif
+  autocmd FileType,BufEnter * if &diff|colorscheme pablo|endif
+  autocmd FileType,BufEnter,BufWinEnter,WinEnter netrw colorscheme pablo
+  " above will use zellner for text files but pablo for diff and netrw
+  " note this also relies on the file ~/.vim/after/ftplugin/netrw.vim
+endif
+
+" plugin manager
+call plug#begin('~/.vim/plugged')
+
+Plug 'junegunn/fzf', {'do': {-> fzf#install()} }
+Plug 'junegunn/fzf.vim'
+
+" changes scope of search to project directory (not current directory)
+" Plug 'airblade/vim-rooter' 
+
+" preview window with vim fzf
+Plug 'yuki-yano/fzf-preview.vim', {'rev':'release/rpc'}
+
+" colorschemes (using this just for neovim)
+Plug 'morhetz/gruvbox'
+
+"nerd tree lets you view the folder/file structure
+Plug 'preservim/nerdtree'
+
+"CoC
+Plug 'neoclide/coc.nvim', {'branch':'release'}
+
+"nerd fonts to work with NERDTree or CocExplorer
+" (currently not working with NERDTree)
+Plug 'ryanoasis/vim-devicons'
+
+" vimspector is for debugging
+if !has('nvim')
+  Plug 'puremourning/vimspector'
+endif
+
+" maximizer is useful for toggling window sizes with inspector
+" Plug 'szw/vim-maximizer'
+
+call plug#end()
+
+" map CTRL C to nerdtree
+map <C-n> :NERDTreeToggle<CR>
+let NERDTreeShowHidden=1
+" map <C-t> :FZF<CR>
+map <C-t> :Files<CR>
+let g:fzf_preview_window=['right:60%','ctrl-/']
+" map <C-f> :FZF<CR>
+map <C-f> :Rg<CR>
+map <C-p> :Rg<CR>
+map <C-r> :History:<CR>
+autocmd BufWritePre *.go :silent call CocAction('runCommand', 'editor.action.organizeImport')
+if !has('nvim')
+  "packadd! vimspector
+endif
+
+
+" misc 
+" removes highlight after hit esc
+nnoremap <silent><Leader><Esc> :noh<CR>
