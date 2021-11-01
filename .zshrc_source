@@ -1,6 +1,17 @@
 
 alias git_submodule='git submodule update --init --recursive'
 alias git_push='git branch --show-current | xargs -n 1 git push origin'
+
+# prerequisites for fzf
+prereqs=(rg ag tree bat fd)
+for i in $prereqs; do
+  [ ! -x "$(command -v $i)" ] && echo "need to install $i"
+done
+unset prereqs
+
+# if no ggrep, just use grep
+[ ! -x "$(command -v ggrep)" ] && alias ggrep='grep'
+
 pfzf(){
   fzf --preview='less {}' \
   --bind shift-up:preview-up,shift-down:preview-down
