@@ -4,6 +4,7 @@ alias git_submodule='git submodule update --init --recursive'
 alias git_push='git branch --show-current | xargs -n 1 git push origin'
 alias showpath='echo "${(@s[:])PATH}" | xargs -n 1 | sort | uniq'
 alias nvimedit='nvim -p ~/.zshrc ~/.config/nvim/.zshrc_source ~/.config/nvim/init.vim'
+alias nvimdir='nvim -c "terminal" -c "CocCommand explorer"'
 function nvimcommit(){
 
   if [ ! -z "$1" ]; then
@@ -22,7 +23,7 @@ function nvimcommit(){
 }
 
 # prerequisites for fzf and vim
-prereqs=(rg ag tree bat fd python ruby node npm nvim)
+prereqs=(rg ag tree bat fd python3 ruby node npm nvim)
 for i in $prereqs; do
   [ ! -x "$(command -v $i)" ] && echo "need to install $i"
 done
