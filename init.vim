@@ -105,7 +105,7 @@ vnoremap <C-c> "*y
 " (note an alternative: ctrl-z. then to go back to nvim, type fg)
 nnoremap <leader>tt :tabnew<CR>:terminal<CR>i
 nnoremap <leader>tx :split<CR>:terminal<CR><C-w>ri
-nnoremap <leader>tv :vsplit<CR>:terminal<CR>i
+nnoremap <leader>tv :vsplit<CR>:terminal<CR><C-w>ri
 nnoremap <leader>ti :terminal<CR>i
 
 " all default settings copy/pasted to cocconfig.vim
