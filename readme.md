@@ -7,6 +7,11 @@ Any local-specific settings are to be saved in the .zshrc file
 
 * install zsh
 * install neovim
-* download this repository: ` git clone https://github.com/jaredmtterminus/nvimconfig ~/.config/nvim `
+* download this repository:
+
+```sh
+git clone https://github.com/jaredmtterminus/nvimconfig ~/.config/nvim
+```
+
 * add to .zshrc: ` source ~/.config/nvim/.zshrc_source `
 * run ` zsh ` and follow any instructions given
