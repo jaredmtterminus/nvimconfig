@@ -23,7 +23,7 @@ function nvimcommit(){
 }
 
 # prerequisites for fzf and vim
-prereqs=(rg ag tree bat fd python3 ruby node npm nvim)
+prereqs=(git fzf rg ag tree bat fd python3 ruby node npm nvim)
 for i in $prereqs; do
   [ ! -x "$(command -v $i)" ] && echo "need to install $i"
 done
@@ -31,6 +31,11 @@ unset prereqs
 
 # if no ggrep, just use grep
 [ ! -x "$(command -v ggrep)" ] && alias ggrep='grep'
+
+#check if Vim Plug is installed
+if [ ! -f "$HOME/.local/share/nvim/site/autoload/plug.vim" ]; then
+  echo "install Vim Plug to neovim autoload directory"
+fi
 
 pfzf(){
   fzf --preview='less {}' \
