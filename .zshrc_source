@@ -2,7 +2,14 @@
 [ ! -d ~/.config/nvim ] && mkdir -p ~/.config/nvim
 alias git_submodule='git submodule update --init --recursive'
 alias git_push='git branch --show-current | xargs -n 1 git push origin'
-alias showpath='echo "${(@s[:])PATH}" | xargs -n 1 | sort | uniq'
+# alias showpath='echo "${(@s[:])PATH}" | xargs -n 1 | sort | uniq'
+function showpath(){
+  #FS = Field Separator (what is between the fields). FPAT = Field Pattern (what is in the fields)
+  #NF = Number of Fields
+  #note that $0 = all fields. $1 is first field
+  echo $PATH | awk  'BEGIN{FS=":";FPAT="[^\:]+"}{for (i=1;i<=NF;i++){print $i}}' \
+    | sort | uniq
+}
 alias nvimedit='nvim -p ~/.zshrc ~/.config/nvim/.zshrc_source ~/.config/nvim/init.vim'
 alias nvimdir='nvim -c "terminal" -c "CocCommand explorer"'
 function nvimcommit(){
