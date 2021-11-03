@@ -10,8 +10,7 @@ function showpath(){
   #note that $0 = all fields. $1 is first field
   #awk returns records. each record contains fields
   #echo $PATH | awk  'BEGIN{FS=":";FPAT="[^\:]+"}{for (i=1;i<=NF;i++){print $i}}' \
-  echo $PATH | awk 'BEGIN{RS=":"}{print $0}' \
-    | sort | uniq | ggrep -P ".+"
+  echo $PATH | awk 'BEGIN{RS=":"}{print $1}' | sort | uniq 
 }
 alias nvimedit='nvim -p ~/.zshrc ~/.config/nvim/.zshrc_source ~/.config/nvim/init.vim'
 alias nvimdir='nvim -c "terminal" -c "CocCommand explorer"'
