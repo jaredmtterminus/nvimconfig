@@ -6,6 +6,8 @@ set ic
 set is
 set number
 
+set inccommand=nosplit
+
 " syntax highlighting (vim has some built in)
 syntax on
 
