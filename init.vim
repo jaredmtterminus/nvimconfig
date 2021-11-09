@@ -109,6 +109,7 @@ nnoremap <leader>tt :tabnew<CR>:terminal<CR>i
 nnoremap <leader>tx :split<CR>:terminal<CR><C-w>r:resize 6<CR>i
 nnoremap <leader>tv :vsplit<CR>:terminal<CR><C-w>ri
 nnoremap <leader>ti :terminal<CR>i
+autocmd TermOpen * set nonumber
 
 " all default settings copy/pasted to cocconfig.vim
 source ~/.config/nvim/cocconfig.vim
