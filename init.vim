@@ -106,7 +106,7 @@ vnoremap <C-c> "*y
 " open terminal in separate tab
 " (note an alternative: ctrl-z. then to go back to nvim, type fg)
 nnoremap <leader>tt :tabnew<CR>:terminal<CR>i
-nnoremap <leader>tx :split<CR>:terminal<CR><C-w>ri
+nnoremap <leader>tx :split<CR>:terminal<CR><C-w>r:resize 6<CR>i
 nnoremap <leader>tv :vsplit<CR>:terminal<CR><C-w>ri
 nnoremap <leader>ti :terminal<CR>i
 
