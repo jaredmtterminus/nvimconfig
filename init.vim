@@ -109,8 +109,13 @@ nnoremap <leader>tt :tabnew<CR>:terminal<CR>i
 nnoremap <leader>tx :split<CR>:terminal<CR><C-w>r:resize 6<CR>i
 nnoremap <leader>tv :vsplit<CR>:terminal<CR><C-w>ri
 nnoremap <leader>ti :terminal<CR>i
-autocmd TermOpen * set nonumber
-autocmd BufEnter * set number
+autocmd TermOpen * setlocal nonumber
+
+" open link from grep command
+nnoremap <leader>ot viW"*y:tabnew <C-r>"<CR>
+nnoremap <leader>ox viW"*y:split <C-r>"<CR><C-w>K
+nnoremap <leader>ov viW"*y:vsplit <C-r>"<CR><C-w>L
+nnoremap <leader>oi viW"*y:e <C-r>"<CR>
 
 " all default settings copy/pasted to cocconfig.vim
 source ~/.config/nvim/cocconfig.vim
