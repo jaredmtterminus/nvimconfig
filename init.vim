@@ -112,10 +112,10 @@ nnoremap <leader>ti :terminal<CR>i
 autocmd TermOpen * setlocal nonumber
 
 " open link from grep command
-nnoremap <leader>ot viW"*y:tabnew <C-r>"<CR>
-nnoremap <leader>ox viW"*y:split <C-r>"<CR><C-w>K
-nnoremap <leader>ov viW"*y:vsplit <C-r>"<CR><C-w>L
-nnoremap <leader>oi viW"*y:e <C-r>"<CR>
+nnoremap <leader>ot viW"xy:tabnew <C-r>x<CR>
+nnoremap <leader>ox viW"xy:split <C-r>x<CR><C-w>K
+nnoremap <leader>ov viW"xy:vsplit <C-r>x<CR><C-w>L
+nnoremap <leader>oi viW"xy:e <C-r>x<CR>
 
 " all default settings copy/pasted to cocconfig.vim
 source ~/.config/nvim/cocconfig.vim
