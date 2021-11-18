@@ -15,3 +15,27 @@ git clone https://github.com/jaredmtterminus/nvimconfig ~/.config/nvim
 
 * add to .zshrc: ` source ~/.config/nvim/.zshrc_source `
 * run ` zsh ` and follow any instructions given
+
+### Extra steps required for linux
+
+* after installing fd with ```sudo apt install fd-find``` :
+
+```sh
+ln -s $(which fdfind) ~/.local/bin/fd
+```
+
+* after installing bat with ```sudo apt install bat``` :
+
+```sh
+mkdir -p ~/.local/bin
+ln -s /usr/bin/batcat ~/.local/bin/bat
+```
+
+note: you may need to also add ```~/.local/bin``` to path
+
+* after installing fzf with ```sudo apt install fzf```
+add to .zshrc:
+
+```sh
+export FZF_KEY_BINDINGS_FILE='/usr/share/doc/fzf/examples/key-bindings.zsh'
+```
