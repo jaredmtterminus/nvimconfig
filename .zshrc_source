@@ -54,7 +54,7 @@ pfzf(){
 # [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 if [ -z "$FZF_KEY_BINDINGS_FILE" ]; then
   echo "set \$FZF_KEY_BINDINGS_FILE \
-    . Look in install dir to find .../shell/key-bindings.zsh"
+    . Look in install dir to find .../key-bindings.zsh"
 else
   source "$FZF_KEY_BINDINGS_FILE"
 fi 
