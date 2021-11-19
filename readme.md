@@ -41,3 +41,11 @@ add to .zshrc:
 ```sh
 export FZF_KEY_BINDINGS_FILE='/usr/share/doc/fzf/examples/key-bindings.zsh'
 ```
+
+* to update node to latest version (required for neovim):
+
+```sh
+sudo npm cache clean -f
+sudo npm install -g n
+sudo n stable
+```
