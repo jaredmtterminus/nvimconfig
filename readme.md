@@ -32,6 +32,8 @@ ln -s /usr/bin/batcat ~/.local/bin/bat
 ```
 
 note: you may need to also add ```~/.local/bin``` to path
+to fix dpkg error: ```sudo -i``` and ```sudo dpkg -i --force-overwrite <deb file>```
+Finally: ```sudo apt install -f bat```
 
 * after installing fzf with ```sudo apt install fzf```
 add to .zshrc:
