@@ -30,6 +30,22 @@ function nvimcommit(){
   fi
 
 }
+function nvimstatus(){
+  CURDIR=$PWD
+  cd ~/.config/nvim
+  git checkout master
+  git status
+  cd "$CURDIR"
+  unset CURDIR
+}
+function nvimdiff(){
+  CURDIR=$PWD
+  cd ~/.config/nvim
+  git checkout master
+  git diff
+  cd "$CURDIR"
+  unset CURDIR
+}
 
 # prerequisites for fzf and vim
 prereqs=(git fzf rg ag tree bat fd python3 ruby node npm nvim)
