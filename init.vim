@@ -162,5 +162,5 @@ let g:coc_global_extensions=[
 " maybe add: coc-metals
 
 let g:user_emmet_install_global = 0
-autocmd FileType html,css,html.erb EmmetInstall
+autocmd FileType html,css,*.html.erb EmmetInstall
 let g:user_emmet_leader_key='<tab>'
