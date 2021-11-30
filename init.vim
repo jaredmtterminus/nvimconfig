@@ -76,6 +76,9 @@ Plug 'puremourning/vimspector'
 " maximizer is useful for toggling window sizes with inspector
 Plug 'szw/vim-maximizer'
 
+" emmet for vim. (vscode auto complete on html)
+Plug 'mattn/emmet-vim'
+
 call plug#end()
 
 map <C-n> :NERDTreeToggle<CR>
@@ -158,3 +161,6 @@ let g:coc_global_extensions=[
       \]
 " maybe add: coc-metals
 
+let g:user_emmet_install_global = 0
+autocmd FileType html,css,html.erb EmmetInstall
+let g:user_emmet_leader_key='<tab>'
