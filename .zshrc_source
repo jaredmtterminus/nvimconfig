@@ -46,6 +46,9 @@ function nvimdiff(){
   cd "$CURDIR"
   unset CURDIR
 }
+function lsdir(){
+  ls -l $@ | awk '$1~/^d/{print $9}'
+}
 
 # prerequisites for fzf and vim
 prereqs=(git fzf rg ag tree bat fd python3 ruby node npm nvim)
