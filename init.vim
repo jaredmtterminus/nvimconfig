@@ -79,6 +79,9 @@ Plug 'szw/vim-maximizer'
 " emmet for vim. (vscode auto complete on html)
 Plug 'mattn/emmet-vim'
 
+" OPA / rego
+Plug 'tsandall/vim-rego'
+
 call plug#end()
 
 map <C-n> :NERDTreeToggle<CR>
