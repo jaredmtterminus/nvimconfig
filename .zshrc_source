@@ -12,13 +12,14 @@ function showpath(){
   #echo $PATH | awk  'BEGIN{FS=":";FPAT="[^\:]+"}{for (i=1;i<=NF;i++){print $i}}' \
   echo $PATH | awk 'BEGIN{RS=":"}{print $1}' | sort | uniq 
 }
-function get_github_token(){
+function get-github-token(){
   #line 1: read from gitconfig
   #line 2: breaking down so each row is <key> <value>. removing rows with only 1 field
   #line 3: getting the github password (same as github token)
-  cat ~/.gitconfig | \
+  export GH_TOKEN=$(cat ~/.gitconfig | \
     awk 'BEGIN{FS=" = ";FPAT="[^\=]+";}$2~/.+/{print $1 " " $2}' | \
-    awk '$1~/password/{print $2;exit}'
+    awk '$1~/password/{print $2;exit}')
+  echo "exported to GH_TOKEN"
 }
 alias nvimedit='nvim -p ~/.zshrc ~/.config/nvim/.zshrc_source ~/.config/nvim/init.vim'
 alias nvimdir='nvim -c "terminal" -c "CocCommand explorer"'
@@ -54,7 +55,7 @@ function nvimdiff(){
   cd "$CURDIR"
   unset CURDIR
 }
-function lsdir(){
+function ls_dir(){
   ls -l $@ | awk '$1~/^d/{print $9}'
 }
 
