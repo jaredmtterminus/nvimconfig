@@ -83,11 +83,15 @@ pfzf(){
 if [ -z "$FZF_KEY_BINDINGS_FILE" ]; then
   echo "set \$FZF_KEY_BINDINGS_FILE \
     . Look in $(which fzf)/../.. to find .../key-bindings.zsh"
-  echo "for mac, try: "
-  base=$(which fzf | awk 'BEGIN{FS="/"}{for (i=1;i<=NF-2;i++){print $i}}' |\ 
+  
+  #mac
+  base=$(which fzf | awk 'BEGIN{FS="/"}{for (i=1;i<=NF-2;i++){print $i}}' | \
     xargs | awk '{for (i=1;i<=NF;i++){print "/\n" $i}}' | xargs | sed "s/ //g")
-  fzfversion=$(ls "$base/Cellar/fzf")
-  echo "$base/Cellar/fzf/$fzfversion/shell/key-bindings.zsh"
+  if [ -d "$base/Cellar" ]; then
+    fzfversion=$(ls "$base/Cellar/fzf")
+    echo "for mac, try: "
+    echo "$base/Cellar/fzf/$fzfversion/shell/key-bindings.zsh"
+  fi
 
   echo "for linux, try: "
   echo "/usr/share/doc/fzf/examples/key-bindings.zsh"
