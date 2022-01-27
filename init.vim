@@ -82,6 +82,9 @@ Plug 'mattn/emmet-vim'
 " OPA / rego
 Plug 'tsandall/vim-rego'
 
+" adds number to each tab
+Plug 'mkitt/tabline.vim'
+
 call plug#end()
 
 map <C-n> :NERDTreeToggle<CR>
