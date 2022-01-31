@@ -1,7 +1,7 @@
 
 [ ! -d ~/.config/nvim ] && mkdir -p ~/.config/nvim
 alias git_submodule='git submodule update --init --recursive'
-alias git_push='git branch --show-current | xargs -n 1 git push origin'
+alias git_push='git branch --show-current | xargs -n 1 git push $@ origin'
 # alias showpath='echo "${(@s[:])PATH}" | xargs -n 1 | sort | uniq'
 function showpath(){
   #FS = Field Separator (what is between the fields). FPAT = Field Pattern (what is in the fields)
