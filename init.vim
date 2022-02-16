@@ -61,7 +61,7 @@ Plug 'yuki-yano/fzf-preview.vim', {'rev':'release/rpc'}
 Plug 'morhetz/gruvbox'
 
 "nerd tree lets you view the folder/file structure
-Plug 'preservim/nerdtree'
+" Plug 'preservim/nerdtree'
 
 "CoC
 Plug 'neoclide/coc.nvim', {'branch':'release'}
@@ -87,8 +87,9 @@ Plug 'mkitt/tabline.vim'
 
 call plug#end()
 
-map <C-n> :NERDTreeToggle<CR>
-let NERDTreeShowHidden=1
+" map <C-n> :NERDTreeToggle<CR>
+" let NERDTreeShowHidden=1
+
 " map <C-t> :FZF<CR>
 map <C-t> :Files<CR>
 let g:fzf_preview_window=['right:60%','ctrl-/']
