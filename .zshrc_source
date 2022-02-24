@@ -6,7 +6,7 @@ function git_push(){
   invalid_branch=(main master)
   answer=y
   if [[ ${invalid_branch[(ie)$branch]} -le ${#invalid_branch} ]]; then
-    read -q "answer?push $branch to origin? (y/n)?"
+    read -q "answer?push $branch to origin? (y/n)? "
   fi
   [[ "$answer" == "y" ]] && echo $branch | xargs -n 1 git push $@ origin
 }
