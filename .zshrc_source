@@ -1,7 +1,15 @@
 
 [ ! -d ~/.config/nvim ] && mkdir -p ~/.config/nvim
 alias git_submodule='git submodule update --init --recursive'
-alias git_push='git branch --show-current | xargs -n 1 git push $@ origin'
+function git_push(){
+  branch=$(git branch --show-current)
+  invalid_branch=(main master)
+  answer=y
+  if [[ ${invalid_branch[(ie)$branch]} -le ${#invalid_branch} ]]; then
+    read -q "answer?push $branch to origin? (y/n)?"
+  fi
+  [[ "$answer" == "y" ]] && echo $branch | xargs -n 1 git push $@ origin
+}
 # alias showpath='echo "${(@s[:])PATH}" | xargs -n 1 | sort | uniq'
 function showpath(){
   #FS = Field Separator (what is between the fields). FPAT = Field Pattern (what is in the fields)
