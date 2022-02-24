@@ -10,6 +10,7 @@ function git_push(){
   fi
   [[ "$answer" == "y" ]] && echo $branch | xargs -n 1 git push $@ origin
 }
+
 # alias showpath='echo "${(@s[:])PATH}" | xargs -n 1 | sort | uniq'
 function showpath(){
   #FS = Field Separator (what is between the fields). FPAT = Field Pattern (what is in the fields)
