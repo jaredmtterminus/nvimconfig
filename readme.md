@@ -14,7 +14,10 @@ git clone https://github.com/jaredmtterminus/nvimconfig ~/.config/nvim
 ```
 
 * add to .zshrc: ` source ~/.config/nvim/.zshrc_source `
-* run ` zsh ` and follow any instructions given
+* run ` zsh ` and follow any instructions given.
+  * repeat this step until all prerequisites are satisfied
+* run `nvim` and type `:PlugInstall` into vim.
+* (optional) in neovim run `:healthcheck` to see what may need to be installed
 
 ### Extra steps required for linux
 
