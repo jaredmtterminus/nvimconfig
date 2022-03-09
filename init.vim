@@ -60,9 +60,6 @@ Plug 'yuki-yano/fzf-preview.vim', {'rev':'release/rpc'}
 " colorschemes (using this just for neovim)
 Plug 'morhetz/gruvbox'
 
-"nerd tree lets you view the folder/file structure
-" Plug 'preservim/nerdtree'
-
 "CoC
 Plug 'neoclide/coc.nvim', {'branch':'release'}
 
@@ -85,6 +82,17 @@ Plug 'tsandall/vim-rego'
 " adds number to each tab
 Plug 'mkitt/tabline.vim'
 
+" attempt to use this for opa/rego
+" Plug 'prabirshrestha/vim-lsp'
+
+" attempt to use lsp config for opa/rego
+" this is what brian uses but requires everything move to init.lua
+" within lspconfig, use https://github.com/kitagry/regols
+" Plug 'neovim/nvim-lspconfig'
+
+" autoformat gives ability to format on save
+Plug 'Chiel92/vim-autoformat'
+
 call plug#end()
 
 " map <C-n> :NERDTreeToggle<CR>
@@ -101,6 +109,12 @@ autocmd BufWritePre *.go :silent call CocAction('runCommand', 'editor.action.org
 let g:vimspector_enable_mappings = 'HUMAN'
 " packadd! vimspector
 
+" opa autoformat
+let g:formatdef_rego = '"opa fmt"'
+let g:formatters_rego = ['rego']
+let g:autoformat_autoindent = 0
+let g:autoformat_retab = 0
+au BufWritePre *.rego Autoformat
 
 " miscellaneous
 " removes highlight after hit esc
