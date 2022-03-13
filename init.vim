@@ -105,16 +105,27 @@ let g:fzf_preview_window=['right:60%','ctrl-/']
 map <C-f> :Rg<CR>
 map <C-p> :Rg<CR>
 map <C-r> :History:<CR>
-autocmd BufWritePre *.go :silent call CocAction('runCommand', 'editor.action.organizeImport')
+"autocmd BufWritePre *.go :silent call CocAction('runCommand', 'editor.action.organizeImport')
 let g:vimspector_enable_mappings = 'HUMAN'
 " packadd! vimspector
+
 
 " opa autoformat
 let g:formatdef_rego = '"opa fmt"'
 let g:formatters_rego = ['rego']
+let g:formatdef_go = '"gofmt"'
+let g:formatters_go = ['go']
 let g:autoformat_autoindent = 0
 let g:autoformat_retab = 0
-au BufWritePre *.rego Autoformat
+autocmd BufWritePre *.rego Autoformat
+
+function GoBufWritePre()
+  silent call CocAction('runCommand', 'editor.action.organizeImport')
+  silent Autoformat
+endfunction
+autocmd BufWinEnter *.go silent setlocal syntax=go
+autocmd BufWritePre *.go call GoBufWritePre()
+autocmd BufNewFile,BufRead,BufWinEnter * if expand('%:t') !~ '\.' | set ft=zsh | endif
 
 " miscellaneous
 " removes highlight after hit esc
