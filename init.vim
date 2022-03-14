@@ -119,12 +119,12 @@ let g:autoformat_autoindent = 0
 let g:autoformat_retab = 0
 autocmd BufWritePre *.rego Autoformat
 
-function GoBufWritePre()
+function BufWritePreGoDo()
   silent call CocAction('runCommand', 'editor.action.organizeImport')
   silent Autoformat
 endfunction
 autocmd BufWinEnter *.go silent setlocal syntax=go
-autocmd BufWritePre *.go call GoBufWritePre()
+autocmd BufWritePre *.go call BufWritePreGoDo()
 autocmd BufNewFile,BufRead,BufWinEnter * if expand('%:t') !~ '\.' | set ft=zsh | endif
 
 " miscellaneous
@@ -144,7 +144,11 @@ nnoremap <leader>tt :tabnew<CR>:terminal<CR>i
 nnoremap <leader>tx :split<CR>:terminal<CR><C-w>r:resize 6<CR>i
 nnoremap <leader>tv :vsplit<CR>:terminal<CR><C-w>ri
 nnoremap <leader>ti :terminal<CR>i
-autocmd TermOpen * setlocal nonumber
+function TermOpenDo() 
+  setlocal nonumber
+  setlocal ft=
+endfunction
+autocmd TermOpen,TermResponse * call TermOpenDo()
 
 " open link from grep command
 nnoremap <leader>ot viW"xy:tabnew <C-r>x<CR>
