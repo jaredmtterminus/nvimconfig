@@ -164,6 +164,19 @@ listening() {
     fi
 }
 
+jwt_encode(){
+  payload=$1
+  secret=${2:-$JWT_SIGNING_SECRET}
+  [[ -z "$secret" ]] && echo "using encoded supersecret" && secret=$(echo "supersecret" | base64)
+  python3 -c 'import jwt; encode = jwt.encode('$payload',"'$secret'",algorithm="HS256"); print(encode)'
+}
+jwt_decode(){
+  encoded=$1
+  secret=${2:-$JWT_SIGNING_SECRET}
+  [[ -z "$secret" ]] && echo "using encoded supersecret" && secret=$(echo "supersecret" | base64)
+  python3 -c 'import jwt; decode = jwt.decode("'$encoded'","'$secret'",algorithms=["HS256"]); print(decode)'
+}
+
 
 #format of terminal display showing just path
 #https://scriptingosx.com/2019/07/moving-to-zsh-06-customizing-the-zsh-prompt/
