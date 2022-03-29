@@ -93,6 +93,9 @@ Plug 'mkitt/tabline.vim'
 " autoformat gives ability to format on save
 Plug 'Chiel92/vim-autoformat'
 
+" using helm syntax highlighting instead of yaml
+Plug 'towolf/vim-helm'
+
 call plug#end()
 
 " map <C-n> :NERDTreeToggle<CR>
@@ -188,7 +191,6 @@ let g:coc_global_extensions=[
       \'coc-solargraph',
       \'coc-explorer',
       \'coc-git',
-      \'coc-yaml',
       \'coc-xml',
       \'coc-go', 
       \'coc-css',

@@ -25,9 +25,7 @@ function get-github-token(){
   #line 1: read from gitconfig
   #line 2: breaking down so each row is <key> <value>. removing rows with only 1 field
   #line 3: getting the github password (same as github token)
-  export GH_TOKEN=$(cat ~/.gitconfig | \
-    awk 'BEGIN{FS=" = ";FPAT="[^\=]+";}$2~/.+/{print $1 " " $2}' | \
-    awk '$1~/password/{print $2;exit}')
+  export GH_TOKEN=$(git config --get user.password)
   echo "exported to GH_TOKEN"
 }
 alias nvimedit='nvim -p ~/.zshrc ~/.config/nvim/.zshrc_source ~/.config/nvim/init.vim'
