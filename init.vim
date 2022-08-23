@@ -195,7 +195,9 @@ let g:coc_global_extensions=[
       \'coc-go', 
       \'coc-css',
       \'coc-tsserver',
-      \'coc-json'
+      \'coc-json',
+      \'coc-java',
+      \'coc-groovy',
       \]
 " maybe add: coc-metals
 

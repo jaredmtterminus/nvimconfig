@@ -151,6 +151,15 @@ alias git_cleanbranches='git checkout master && git branch \
 alias git_cleanbranchesD='git checkout master && git branch \
   | grep -v "master" | xargs -n 1 git branch -D'
 alias docker_restart='docker ps -q | xargs docker restart'
+function docker_clean_all(){
+  docker ps -q | xargs -n 1 docker stop
+  docker ps -aq | xargs -n 1 docker rm
+  docker images -q | xargs -n 1 docker rmi
+}
+function docker_clean_containers(){
+  docker ps -q | xargs -n 1 docker stop
+  docker ps -aq | xargs -n 1 docker rm
+}
 
 listening() {
     if [ $# -eq 0 ]; then
@@ -162,17 +171,32 @@ listening() {
     fi
 }
 
-jwt_encode(){
+function jwt_encode(){
   payload=$1
   secret=${2:-$JWT_SIGNING_SECRET}
   [[ -z "$secret" ]] && echo "using encoded supersecret" && secret=$(echo "supersecret" | base64)
   python3 -c 'import jwt; encode = jwt.encode('$payload',"'$secret'",algorithm="HS256"); print(encode)'
 }
-jwt_decode(){
+function jwt_decode_and_validate(){
   encoded=$1
   secret=${2:-$JWT_SIGNING_SECRET}
   [[ -z "$secret" ]] && echo "using encoded supersecret" && secret=$(echo "supersecret" | base64)
-  python3 -c 'import jwt; decode = jwt.decode("'$encoded'","'$secret'",algorithms=["HS256"]); print(decode)'
+  python3 -c 'import jwt; decode = jwt.decode("'$encoded'","'$secret'",algorithms=["HS256"]); print(decode)' | \
+    sed -e 's/'"'"'/"/g' -e 's/None/""/g'
+}
+function jwt_decode(){
+  #does not care about the secret
+  token=$1
+  if [[ -z $token ]];then
+    read IN
+    token=$IN
+  fi
+  claims=$(echo $token | sed 's/\./ /g' | awk '{print $2}')
+  len=$(echo $claims | wc -c | awk '{print $1}')
+  [[ $(($len % 4)) == 3 ]] && claims="${claims}=="
+  [[ $(($len % 4)) == 4 ]] && claims="${claims}="
+  echo $claims | base64 --decode | jq
+  #echo $token | sed 's/\.//g' | base64 --decode | jq | jq -s '.[1]'
 }
 
 
