@@ -13,7 +13,7 @@ function git_push(){
 
 function git_diff(){
   #this applies some defaults
-  git diff $@ ':!*.pb.go'
+  git diff $@ ':!*.pb.go'  ':!*.pb.gw.go' ':!*fakes*.go'
 }
 
 # alias showpath='echo "${(@s[:])PATH}" | xargs -n 1 | sort | uniq'
