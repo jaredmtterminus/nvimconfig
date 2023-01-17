@@ -13,7 +13,7 @@ function git_push(){
 
 function git_diff(){
   #this applies some defaults
-  git diff $@ ':!*.pb.go'  ':!*.pb.gw.go' ':!*fakes*.go'
+  git diff $@ ':!*.pb.go'  ':!*.pb.gw.go' ':!*fakes*.go' ':!*vendor*' ':!*proto_gen*'
 }
 
 # alias showpath='echo "${(@s[:])PATH}" | xargs -n 1 | sort | uniq'
@@ -31,7 +31,10 @@ function get-github-token(){
   #line 2: breaking down so each row is <key> <value>. removing rows with only 1 field
   #line 3: getting the github password (same as github token)
   export GH_TOKEN=$(git config --get user.password)
-  echo "exported to GH_TOKEN"
+  export GITHUB_TOKEN=$GH_TOKEN
+  #export GITHUB_USER=$(git config --get user.email)
+  export GITHUB_USER=jaredmtterminus
+  echo "exported to GH_TOKEN and GITHUB_TOKEN"
 }
 alias nvimedit='nvim -p ~/.zshrc ~/.config/nvim/.zshrc_source ~/.config/nvim/init.vim'
 alias nvimdir='nvim -c "terminal" -c "CocCommand explorer"'
