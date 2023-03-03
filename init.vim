@@ -79,6 +79,9 @@ Plug 'mattn/emmet-vim'
 " OPA / rego
 Plug 'tsandall/vim-rego'
 
+" terraform
+" Plug 'hashivim/vim-terraform'
+
 " adds number to each tab
 Plug 'mkitt/tabline.vim'
 
@@ -118,9 +121,12 @@ let g:formatdef_rego = '"opa fmt"'
 let g:formatters_rego = ['rego']
 let g:formatdef_go = '"gofmt"'
 let g:formatters_go = ['go']
+let g:formatdef_tf = '"terraform fmt -list=false"'
+let g:formatters_tf = ['tf']
 let g:autoformat_autoindent = 0
 let g:autoformat_retab = 0
 autocmd BufWritePre *.rego Autoformat
+autocmd BufWritePost *.tf Autoformat | e | redraw!
 
 function BufWritePreGoDo()
   silent call CocAction('runCommand', 'editor.action.organizeImport')
