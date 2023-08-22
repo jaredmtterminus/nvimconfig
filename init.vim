@@ -126,7 +126,7 @@ let g:formatters_tf = ['tf']
 let g:autoformat_autoindent = 0
 let g:autoformat_retab = 0
 autocmd BufWritePre *.rego Autoformat
-autocmd BufWritePost *.tf Autoformat | e | redraw!
+autocmd BufWritePost *.tf,*.tfvars Autoformat | e | redraw!
 
 function BufWritePreGoDo()
   silent call CocAction('runCommand', 'editor.action.organizeImport')

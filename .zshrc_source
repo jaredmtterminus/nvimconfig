@@ -192,8 +192,7 @@ function jwt_decode_and_validate(){
   python3 -c 'import jwt; decode = jwt.decode("'$encoded'","'$secret'",algorithms=["HS256"]); print(decode)' | \
     sed -e 's/'"'"'/"/g' -e 's/None/""/g'
 }
-function jwt_decode(){
-  #does not care about the secret
+function jwt_decode2(){
   token=$1
   if [[ -z $token ]];then
     read IN
@@ -207,6 +206,38 @@ function jwt_decode(){
   #echo $token | sed 's/\.//g' | base64 --decode | jq | jq -s '.[1]'
 }
 
+function jwt_decode(){
+  token=$1
+  if [[ -z $token ]];then
+    read IN
+    token=$IN
+  fi
+
+  # Extract the payload part from the JWT token
+  payload=$(echo "$token" | awk -F'.' '{print $2}')
+
+  # Base64 decode the payload
+  decoded_payload=$(echo "$payload" | base64 -d 2>/dev/null)
+
+  # Check if the decoding was successful
+  if [[ $? -ne 0 ]]; then
+      echo "Error: Invalid JWT token format"
+      return 1
+  fi
+
+  # Use jq to pretty print the decoded JSON payload
+  echo "$decoded_payload" | jq
+}
+
+function jwt_decode_all(){
+  token=$1
+  if [[ -z $token ]];then
+    read IN
+    token=$IN
+  fi
+  claims=$(echo $token | sed 's/\.//g')
+  echo $climas | base64 --decode
+}
 
 #format of terminal display showing just path
 #https://scriptingosx.com/2019/07/moving-to-zsh-06-customizing-the-zsh-prompt/
