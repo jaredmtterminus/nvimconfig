@@ -99,6 +99,9 @@ Plug 'Chiel92/vim-autoformat'
 " using helm syntax highlighting instead of yaml
 Plug 'towolf/vim-helm'
 
+" just use coc-go. I can't find anything better
+" Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+
 call plug#end()
 
 " map <C-n> :NERDTreeToggle<CR>
