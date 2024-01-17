@@ -257,6 +257,24 @@ function jq_clean(){
   # this function will "clean" the input of colors so jq can parse correctly
   sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g" | jq $@
 }
+function jq2(){
+# this version will fix formatting and other issues
+# note: this didn't work
+  read -r input
+  printf '%s' "$input" | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g" | jq $@
+}
+
+urlencode() {
+    setopt localoptions extendedglob
+    input=( ${(s::)1} )
+    print ${(j::)input/(#b)([^A-Za-z0-9_.\!~*\'\(\)-])/%${(l:2::0:)$(([##16]#match))}}
+}
+
+int_to_date(){
+  input=$1
+  [[ -z $input ]] && input=$(cat)
+  date -r ${input} "+%Y-%m-%d %H:%M:%S"
+}
 
 #format of terminal display showing just path
 #https://scriptingosx.com/2019/07/moving-to-zsh-06-customizing-the-zsh-prompt/

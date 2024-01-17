@@ -102,6 +102,12 @@ Plug 'towolf/vim-helm'
 " just use coc-go. I can't find anything better
 " Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
+" AI code completion
+" Plug 'zxqfl/tabnine-vim' " old version
+" Plug 'codota/tabnine-nvim', { 'do': './dl_binaries.sh' }
+
+Plug 'github/copilot.vim'
+
 call plug#end()
 
 " map <C-n> :NERDTreeToggle<CR>
