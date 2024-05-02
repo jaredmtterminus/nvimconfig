@@ -276,6 +276,41 @@ int_to_date(){
   date -r ${input} "+%Y-%m-%d %H:%M:%S"
 }
 
+psql_from_database_url(){
+  db_url=$1 
+  if [[ -z $db_url ]] && [[ ! -t 0 ]]
+  then
+      read IN
+      db_url=$IN 
+  fi
+  DATABASE_URL="${db_url:-$DATABASE_URL}" 
+  [[ -z $DATABASE_URL ]] && echo "DATABASE_URL is not set" && exit
+  user=$(echo $DATABASE_URL | awk -F[/:] '{print $4}') 
+  password_and_host=$(echo $DATABASE_URL | awk -F[/:] '{print $5}') 
+  password=$(echo $password_and_host | awk -F@ '{print $1}') 
+  host=$(echo $password_and_host | awk -F@ '{print $2}') 
+  database=$(echo $DATABASE_URL | awk -F[/:] '{print $7}') 
+  export PGPASSWORD=$password 
+  psql -h $host -U $user -d $database
+}
+show_function_definition() {
+  typeset -f "$1" | sed '1d;$d'
+}
+
+psql_definition(){
+  echo "#!/bin/bash"
+  show_function_definition psql_from_database_url
+}
+
+
+protodep2(){
+  go run -mod=mod github.com/stormcat24/protodep $@
+}
+
+buf2(){
+  docker run --volume "$(pwd):/workspace" --workdir /workspace bufbuild/buf:latest $@
+}
+
 #format of terminal display showing just path
 #https://scriptingosx.com/2019/07/moving-to-zsh-06-customizing-the-zsh-prompt/
 #PS1='%m %~%# '#shows login and full directory
