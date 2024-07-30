@@ -311,6 +311,19 @@ buf2(){
   docker run --volume "$(pwd):/workspace" --workdir /workspace bufbuild/buf:latest $@
 }
 
+
+# dockerized ruby stuff
+
+ruby_local(){
+  version=${1:-latest}
+  docker run -it --rm --name localruby-1 ruby:${version} /bin/bash
+}
+
+irb_local(){
+  version=${1:-latest}
+  docker run -it --rm --name irb-local ruby:${version} irb
+}
+
 #format of terminal display showing just path
 #https://scriptingosx.com/2019/07/moving-to-zsh-06-customizing-the-zsh-prompt/
 #PS1='%m %~%# '#shows login and full directory
