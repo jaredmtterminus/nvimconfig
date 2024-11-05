@@ -1,0 +1,371 @@
+#### zsh config for kubectl tools
+#
+# INSTRUCTIONS: 
+# - set below env vars in .zshrc then source this file
+# - set up wrapper functions in .zshrc to use these inner functions more easily
+#   - can set up wrapper function for each context
+#
+# env vars:
+# KUBE_DEFAULT_CONTEXT  - default kubernetes context
+# kube_to_aws           - map of kubernetes context to aws profile
+
+function _kubectl_get_containers_from_user(){
+  namespace=$1
+  pod=$2
+  context="${3:-$KUBE_DEFAULT_CONTEXT}"
+
+  containers=($(kubectl --context=$context -n $namespace get pods -o json | jq -r '.items[] | select( .metadata.name | startswith("'$pod'")) | .spec.containers[].name' | sort | uniq))
+
+  containers_selection=$(
+    i=1
+    for c in $containers;do
+      echo "${(l:3:: :)i}: $c"
+      i=$(($i+1))
+    done
+  )
+
+  # make 3 columns if too many lines
+  container_count=$(printf "%s\n" "${containers[@]}" | wc -l | awk '{print $1}')
+  if [[ "(($container_count>8))" ]];then
+    pods_selection=$(echo "${containers_selection}" | pr -t -3 -w 120)
+  fi
+
+  # get selection from user input
+  read "ANSWER?${containers_selection}
+  which container? (number or name): "
+
+  if [[ $ANSWER == <-> ]];then
+    #selection is numeric
+    container=$containers[$ANSWER]
+  else
+    #selection is not numeric
+    container=$ANSWER
+  fi
+  echo $container
+}
+function _kubectl_stats(){
+  context=$1
+  namespace=$2
+  if [[ -z $namespace ]];then
+    echo "choose namespace..."
+    namespace=$(_kubectl_get_namespace_from_user $context)
+    [[ -z $namespace ]] && echo "no namespace selected. exiting." && return
+    printf "%s\n\n" "namespace: $namespace"
+  fi
+  limits=$(kubectl --context=$context --namespace $namespace get pods -o json | \
+    jq '
+    def get_num:
+      if test("Gi") then  rtrimstr("Gi") | tonumber*1024
+      elif test("Mi") then rtrimstr("Mi") | tonumber
+      else tonumber
+      end;
+
+    .items[] | 
+      {
+        name: .metadata.name,
+        containers: [.spec.containers[] | {
+          name: .name,
+          cpu_limits:  .resources.limits.cpu,
+          memory_limits:  .resources.limits.memory,
+          cpu_requests:  .resources.requests.cpu,
+          memory_requests:  .resources.requests.memory
+        }]
+
+      } 
+      | 
+      {
+        name: .name,
+        cpu_limits: ([.containers[].cpu_limits | if . != null then rtrimstr("m") | tonumber else 0 end] | add | tostring + "m"),
+        cpu_requests: ([.containers[].cpu_requests | if . != null then rtrimstr("m") | tonumber else 0 end] | add | tostring + "m"), 
+        memory_limits: ([.containers[].memory_limits | if . != null then get_num else 0 end] | add | "\(.)Mi"),
+        memory_requests: ([.containers[].memory_requests | if . != null then get_num else 0 end] | add | "\(.)Mi"),
+      }
+      ')
+
+  usage=$(kubectl --context=$context --namespace $namespace top pods | \
+    awk '
+    NR>1 {
+    print "{\"name\":\"" $1 "\",\"cpu_usage\":\"" $2 "\",\"memory_usage\":\"" $3 "\"}"
+    }')
+
+  # join both json's on name
+  combined=$(echo "$limits $usage" | jq -s)
+  combined=$(echo $combined | jq 'reduce .[] as $item ({}; .[$item.name] += $item) | .[]' | jq -s)
+
+  #change to tsv format and print everything
+  combined=$(echo $combined | jq -r '
+  .[] | 
+    [.name[0:50], .cpu_usage, .cpu_limits, .cpu_requests, .memory_usage, .memory_limits, .memory_requests] 
+    | @tsv') 
+  titles=$(printf "Name\tCPU Use\tCPU Lim\tCPU Req\tMem Use\tMem Lim\tMem Req")
+  printf "$titles\n$combined" | column -t -s $'\t' 2>/dev/null
+}
+
+function _kubectl_get_pods_from_user(){
+  namespace=$1
+  context="${2:-$KUBE_DEFAULT_CONTEXT}"
+  [[ -z $namespace ]] && return
+    
+  pods=($(
+    kubectl --context=$context -n $namespace get pods -o json | jq -r '.items[].metadata.name'))
+
+  pods_selection=$(
+    i=1
+    for p in $pods;do
+      echo "${(l:3:: :)i}: $p"
+      i=$(($i+1))
+    done
+  )
+
+  # make 3 columns if too many lines
+  pod_count=$(printf "%s\n" "${pods[@]}" | wc -l | awk '{print $1}')
+  if [[ "(($pod_count>8))" ]];then
+    pods_selection=$(echo "${pods_selection}" | pr -t -3 -w 120)
+  fi
+
+  # get selection from user input
+  read "ANSWER?${pods_selection}
+  which pod? (number or start of name): "
+
+  if [[ $ANSWER == <-> ]];then
+    #selection is numeric
+    pod=$pods[$ANSWER]
+  else
+    #selection is not numeric
+    pod="service/${ANSWER}"
+  fi
+  echo $pod
+}
+
+
+function _kubectl_get_namespace_from_user(){
+  context="${1:-$KUBE_DEFAULT_CONTEXT}"
+  namespaces=($(kubectl --context=$context get namespaces -o name | sed 's/namespace\///'))
+  namespaces_selection=$(
+    i=1
+    for n in $namespaces;do
+      echo "${(l:3:: :)i}: $n"
+      i=$(($i+1))
+    done
+  )
+
+  # get selection from user input
+  namespaces_selection=$(echo "${namespaces_selection}" | pr -t -3 -w 120)
+  read "ANSWER?${namespaces_selection}
+  which namespace? (number or name): "
+  # vared -cp "${namespaces_selection}
+  # which namespace? (number or name): " ANSWER
+
+  if [[ $ANSWER == <-> ]];then
+    #selection is numeric
+    namespace=$namespaces[$ANSWER]
+  else
+    #selection is not numeric
+    namespace=$ANSWER
+  fi
+  echo $namespace
+}
+
+function _kubectl_ec2_info(){
+  context=$1
+  verbose=$2
+  namespace=$3
+  pod=$4
+  if [[ -z $namespace ]];then
+    echo "choose namespace for $context..."
+    namespace=$(_kubectl_get_namespace_from_user $context)
+    [[ -z $namespace ]] && echo "no namespace selected. exiting." && return
+    printf "%s\n\n" "namespace: $namespace"
+  fi
+  if [[ -z $pod ]]; then
+    printf "%s\n" "choose pod for $context/$namespace..."
+    pod=$(_kubectl_get_pods_from_user $namespace $context)
+    [[ -z $pod ]] && echo "no pod selected. exiting." && return
+    printf "%s\n\n" "pod: $pod"
+  fi
+  pod=$(echo $pod | sed 's/^service\///')
+  node_name=$(kubectl --context $context -n $namespace get pod $pod -o json | jq -r '.spec.nodeName')
+
+  instance_type=$(aws --profile "${kube_to_aws[$context]}" ec2 describe-instances --filters "Name=tag:Name,Values=$node_name" | jq -r '.Reservations[0].Instances[0].InstanceType')
+
+  if [[ $verbose == true ]];then
+    aws --profile "${kube_to_aws[$context]}" ec2 describe-instance-types --instance-types $instance_type --output json \
+      | jq '.InstanceTypes[0]'
+  else
+    aws --profile "${kube_to_aws[$context]}" ec2 describe-instance-types --instance-types $instance_type --output json \
+      | jq '.InstanceTypes[0] | {InstanceType, "Memory_MiB":.MemoryInfo.SizeInMiB, "CPU_GB": .InstanceStorageInfo.TotalSizeInGB}'
+  fi
+}
+
+function _kubectl_env(){
+  context=$1
+  namespace=$2
+  pod=$3
+  container=$4
+  if [[ -z $namespace ]];then
+    echo "choose namespace..."
+    namespace=$(_kubectl_get_namespace_from_user $context)
+    [[ -z $namespace ]] && echo "no namespace selected. exiting." && return
+    printf "%s\n\n" "namespace: $namespace"
+  fi
+  if [[ -z $pod ]]; then
+    printf "%s\n" "choose pod..."
+    pod=$(_kubectl_get_pods_from_user $namespace $context)
+    [[ -z $pod ]] && echo "no pod selected. exiting." && return
+    printf "%s\n\n" "pod: $pod"
+  fi
+  pod=$(echo $pod | sed 's/^service\///')
+  if [[ -z $container ]];then
+    echo "choose container..."
+    container=$(_kubectl_get_containers_from_user $namespace $pod $context)
+    [[ -z $container ]] && echo "no container selected. exiting." && return
+    printf "%s\n\n" "container: $container"
+  fi
+
+  printf "%s\n\n" "showing env of [${context}]/[${namespace}]/[${pod}]/[${container}]..."
+
+  kubectl --context=$context -n $namespace get pods -o json | \
+    jq -r '.items[] | select( .metadata.name | startswith("'$pod'")) | .spec.containers[] | select( .name == "'$container'" ) | .env'
+}
+
+function _kubectl_logs(){
+  context=$1
+  namespace=$2
+  pod=$3
+  container=$4
+  if [[ -z $namespace ]];then
+    echo "choose namespace..."
+    namespace=$(_kubectl_get_namespace_from_user $context)
+    [[ -z $namespace ]] && echo "no namespace selected. exiting." && return
+    printf "%s\n\n" "namespace: $namespace"
+  fi
+  if [[ -z $pod ]]; then
+    printf "%s\n" "choose pod..."
+    pod=$(_kubectl_get_pods_from_user $namespace $context)
+    [[ -z $pod ]] && echo "no pod selected. exiting." && return
+    printf "%s\n\n" "pod: $pod"
+  fi
+  pod=$(echo $pod | sed 's/^service\///')
+  if [[ -z $container ]];then
+    echo "choose container from pod $pod..."
+    container=$(_kubectl_get_containers_from_user $namespace $pod $context)
+    [[ -z $container ]] && echo "no container selected. exiting." && return
+    printf "%s\n\n" "container: $container"
+  fi
+  services=($(kubectl --context=$context -n $namespace get services -o name | sed 's/^service\///'))
+  if (($services[(I)$pod]));then
+    pod="service/${pod}"
+  fi
+
+  printf "\n%s\n\n" "showing logs of [${context}]/[${namespace}]/[${pod}]/[${container}]..."
+  cmnd="kubectl --context=$context -n $namespace logs -c $container $pod -f"
+  printf "%s\n" "$cmnd"
+  kubectl --context=$context -n $namespace logs -c $container $pod -f
+
+  printf "%s\n" "$cmnd"
+  # read -q "ANSWER?Copy command to cipboard (y/n)? "
+  # [[ $ANSWER == y ]] && printf "$cmnd" | pbcopy
+}
+
+function _kubectl_console(){
+  context=$1
+  namespace=$2
+  pod=$3
+  container=$4
+  if [[ -z $namespace ]];then
+    echo "choose namespace..."
+    namespace=$(_kubectl_get_namespace_from_user $context)
+    [[ -z $namespace ]] && echo "no namespace selected. exiting." && return
+    printf "%s\n\n" "namespace: $namespace"
+  fi
+  if [[ -z $pod ]]; then
+    printf "%s\n" "choose pod..."
+    pod=$(_kubectl_get_pods_from_user $namespace $context)
+    [[ -z $pod ]] && echo "no pod selected. exiting." && return
+    printf "%s\n\n" "pod: $pod"
+  fi
+  pod=$(echo $pod | sed 's/^service\///')
+  if [[ -z $container ]];then
+    echo "choose container..."
+    container=$(_kubectl_get_containers_from_user $namespace $pod $context)
+    [[ -z $container ]] && echo "no container selected. exiting." && return
+    printf "%s\n\n" "container: $container"
+  fi
+  services=($(kubectl --context=$context -n $namespace get services -o name | sed 's/^service\///'))
+  if (($services[(I)$pod]));then
+    pod="service/${pod}"
+  fi
+
+  printf "\n%s\n\n" "entering console of [${context}]/[${namespace}]/[${pod}]/[${container}]..."
+
+  kubectl --context=$context -n $namespace exec -c $container $pod -it -- sh
+
+  cmnd="kubectl --context=$context -n $namespace exec -c $container $pod -it -- sh"
+  printf "%s\n" "$cmnd"
+  # read -q "ANSWER?Copy command to cipboard (y/n)? "
+  # [[ $ANSWER == y ]] && printf "$cmnd" | pbcopy
+}
+
+function _kubectl_exec(){
+  context=$1
+  namespace=$2
+  pod=$3
+  container=$4
+  if [[ -z $namespace ]];then
+    echo "choose namespace..."
+    namespace=$(_kubectl_get_namespace_from_user $context)
+    [[ -z $namespace ]] && echo "no namespace selected. exiting." && return
+    printf "%s\n\n" "namespace: $namespace"
+  fi
+  if [[ -z $pod ]]; then
+    printf "%s\n" "choose pod..."
+    pod=$(_kubectl_get_pods_from_user $namespace $context)
+    [[ -z $pod ]] && echo "no pod selected. exiting." && return
+    printf "%s\n\n" "pod: $pod"
+  fi
+  pod=$(echo $pod | sed 's/^service\///')
+  if [[ -z $container ]];then
+    echo "choose container..."
+    container=$(_kubectl_get_containers_from_user $namespace $pod $context)
+    [[ -z $container ]] && echo "no container selected. exiting." && return
+    printf "%s\n\n" "container: $container"
+  fi
+  services=($(kubectl --context=$context -n $namespace get services -o name | sed 's/^service\///'))
+  if (($services[(I)$pod]));then
+    pod="service/${pod}"
+  fi
+
+  cmnd="kubectl --context=$context -n $namespace exec -c $container $pod -- "
+  read "ANSWER?$cmnd"
+  ANSWER=(${(@s: :)ANSWER})
+  printf "\n%s\n\n" "exec of [${context}]/[${namespace}]/[${pod}]/[${container}]..."
+  kubectl --context=$context -n $namespace exec -c $container $pod -- ${ANSWER[@]}
+}
+
+function _kubectl_status(){
+  namespace=$1
+  context=$2
+  if [[ -z $namespace ]];then
+    echo "choose namespace..."
+    namespace=$(_kubectl_get_namespace_from_user $context)
+    [[ -z $namespace ]] && echo "no namespace selected. exiting." && return
+    printf "%s\n\n" "namespace: $namespace"
+  fi
+
+  printf "%s\n\n" "showing pods and status of ${context}/${namespace}..."
+  printf "%s\n" "kubectl --context=$context -n $namespace get pods -w"
+  kubectl --context=$context -n $namespace get pods -w
+}
+
+function _kubectl_endpoints(){
+  context=$1
+  # this will list out all endpoints that can be accessed from any pod
+  kubectl --context=$context get services -A -o json | \
+    jq -r '.items[] | "\(.metadata.namespace).\(.metadata.name).svc.cluster.local:\(.spec.ports[0].port)"'
+}
+
+function _kubectl_namespaces(){
+  context=$1
+  kubectl --context=$context get namespaces -o name \
+    | sed 's/namespace\///' | pr -t -4 -w 120
+}

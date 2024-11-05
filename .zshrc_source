@@ -16,6 +16,10 @@ function git_diff(){
   git diff $@ ':!*.pb.go'  ':!*.pb.gw.go' ':!*fakes*.go' ':!*vendor*' ':!*proto_gen*'
 }
 
+function rbenv_update(){
+  git -C ~/.rbenv/plugins/ruby-build pull
+}
+
 # alias showpath='echo "${(@s[:])PATH}" | xargs -n 1 | sort | uniq'
 function showpath(){
   #FS = Field Separator (what is between the fields). FPAT = Field Pattern (what is in the fields)
@@ -33,10 +37,11 @@ function get-github-token(){
   export GH_TOKEN=$(git config --get user.password)
   export GITHUB_TOKEN=$GH_TOKEN
   #export GITHUB_USER=$(git config --get user.email)
-  export GITHUB_USER=jaredmtterminus
+  export GH_USER=jaredmtterminus
+  export GITHUB_USER=$GH_USER
   echo "exported to GH_TOKEN and GITHUB_TOKEN"
 }
-alias nvimedit='nvim -p ~/.zshrc ~/.config/nvim/.zshrc_source ~/.config/nvim/init.vim'
+alias nvimedit='nvim -p ~/.zshrc ~/.config/nvim/.zshrc_kube ~/.config/nvim/.zshrc_source ~/.config/nvim/init.vim'
 alias nvimdir='nvim -c "terminal" -c "CocCommand explorer"'
 function nvimcommit(){
 
@@ -260,8 +265,9 @@ function jq_clean(){
 function jq2(){
 # this version will fix formatting and other issues
 # note: this didn't work
-  read -r input
-  printf '%s' "$input" | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g" | jq $@
+  perl -pe "s/([\x00-\x1F])/sprintf('\\\\u%04x', ord(\$1))/ge" | jq $@
+  # read -r input
+  # printf '%s' "$input" | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g" | jq $@
 }
 
 urlencode() {
