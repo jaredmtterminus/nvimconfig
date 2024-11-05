@@ -15,6 +15,7 @@ git clone https://github.com/jaredmtterminus/nvimconfig ~/.config/nvim
 
 * add to .zshrc: ` source ~/.config/nvim/.zshrc_source `
 * add to .zshrc: ` source ~/.config/nvim/.zshrc_kube `
+* follow instructions in `~/.config/nvim/.zshrc_kube`
 * run ` zsh ` and follow any instructions given.
   * repeat this step until all prerequisites are satisfied
 * run `nvim` and type `:PlugInstall` into vim.
