@@ -126,6 +126,8 @@ let g:vimspector_enable_mappings = 'HUMAN'
 
 
 " opa autoformat
+let g:formatdef_protobuff = '"proto buf format -w"'
+let g:formatters_protobuff = ['protobuff']
 let g:formatdef_rego = '"opa fmt"'
 let g:formatters_rego = ['rego']
 let g:formatdef_go = '"gofmt"'
@@ -135,7 +137,7 @@ let g:formatters_tf = ['tf']
 let g:autoformat_autoindent = 0
 let g:autoformat_retab = 0
 autocmd BufWritePre *.rego Autoformat
-autocmd BufWritePost *.tf,*.tfvars Autoformat | e | redraw!
+autocmd BufWritePost *.proto,*.tf,*.tfvars Autoformat | e | redraw!
 
 function BufWritePreGoDo()
   silent call CocAction('runCommand', 'editor.action.organizeImport')
